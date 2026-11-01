@@ -1,6 +1,6 @@
 # CONTRACT_DIGITAL_SHADOW — машиночитаемая цифровая тень опыта
 
-**Версия:** 1.1.0 · **Код:** `core/twin/` · **Решение:** `obsidian/Decisions/ADR-017-digital-shadow.md`, ADR-019 (слои НСПД)
+**Версия:** 1.2.0 · **Код:** `core/twin/` · **Решение:** `obsidian/Decisions/ADR-017-digital-shadow.md`, ADR-019 (слои НСПД)
 
 ## Как получить
 - `py .\scripts\export_twin.py <код>` → `html\twin\<код>_twin\` + `<код>_twin.zip`;
@@ -20,14 +20,15 @@
 |---|---|
 | `shadow.json` | канон; проверяется `shadow.schema.json` (эталон — `contracts/digital_shadow/shadow.schema.json`) |
 | `entities.jsonl` / `edges.jsonl` | граф: `{iri, type, label, props}` / `{from, rel, to}` |
-| `claims.jsonl` | `{subject, predicate, value, unit, time, layer, fraction, method, source, data_origin, observation}` |
+| `claims.jsonl` | `{subject, predicate, value, unit, time, layer, fraction, method, source, data_origin, observation, status, check_outcome, status_by, document_revision, raw_value, corrected}` |
 | `scenarios.jsonl` | по делянке: события (разбивка, отбор, внесение, сев, уборка) и отборы, доли и затраты |
 | `shadow.geojson` | слои `field`, `plot`, `harvest_area`, `sampling_point`, `soil_pit`, `soil_map_contour`, `survey_field`, `weather_point`; свойство `iri` |
+| `features_soil_summary.csv` | плоская сводка: показатель × глубина × метод → даты или события отбора, число фактических значений, статус проверки |
 | `features_plot_season.csv` | строка = делянка × сезон |
 | `features_plot_date.csv` | строка = делянка × дата наблюдения |
 | `feature_contract.json` / `.md` | по колонке: `dtype, unit, role, source, window, allowed_use, leakage_risk, cv_group, data_origin, hypotheses, endpoints` |
 | `ontology.ttl` / `shadow.ttl` | TBox (эталон — `contracts/digital_shadow/ontology.ttl`) / ABox |
-| `quality_report.json` / `.md` | readiness (32 проверки), висячие связи, пропуски, происхождение, шкалы, точки вне полосы, ПДн |
+| `quality_report.json` / `.md` | readiness (набор проверок), висячие связи, пропуски, происхождение, шкалы, точки вне полосы, ПДн |
 | `SPEC.md` | описание комплекта |
 | `cadastre_contract.json` | контракт данных кадастра НСПД: группы, слои, `style_policy`, JSON Schema объекта, поля раздела `cadastre` |
 | `cadastre/survey.json` | первый проход (ADR-019): паспорт каждого слоя НСПД под опытом, план второго прохода, ограничения |
@@ -40,6 +41,28 @@
 
 ## data_origin
 `observed` — измерено; `planned` — запланированная фаза; `modelled` — ERA5 / Open-Meteo; `remote_sensing` — Sentinel-2; `calculated` — вычислено из других колонок; `transcribed` — перенесено из документа.
+
+## Статусы и кто их присваивает (1.2.0)
+Две оси у каждого лабораторного значения (`soil_lab` 0008):
+- **`status`** — состояние значения: `valid`, `suspect` (сомнительно), `not_measured` (не определялось, не ноль), `invalid` (недостоверно). Флаг `corrected` — значение изменено ревизией документа.
+- **`check_outcome`** — итог проверки: `not_checked`, `algo_passed`, `algo_flagged`, `expert_confirmed`, `rejected`.
+- **`status_by`** — кто присвоил: `algo:<правило>` — алгоритм; `lab:<документ>-r<ревизия>` — лаборатория переиздала документ; `expert:<роль>` — человек (без ФИО). `invalid`, `expert_confirmed`, `rejected` ставит только эксперт.
+- В признаки (`features_*.csv`) не попадают значения `suspect`, `invalid`, `rejected`; в `claims.jsonl` они остаются со статусом.
+
+## Проверки
+Справочник — таблица `qc_rule` и лист xlsx «Правила проверок» (правило, что проверяется, уровень, кто присваивает, какой статус ставит, версия). Выполняет алгоритм при загрузке документа: номер документа, план/факт даты отбора, не измерено, сумма слоёв, разрыв профиля, копия профиля другой делянки, нулевое значение без «< ПО», суммы фракций, диапазон, глубина, покрытие вариантов. Решение эксперта — отдельное правило `expert_review`.
+
+## Журнал исправлений
+Таблица `measurement_revision`, только дописывается: документ и его ревизия, образец, делянка, глубина, показатель, номер правки, было/стало (значение, текст, статус), причина, кто, когда. Переиздание ведомости не удаляет прежнее значение, а переносит его в журнал; решение эксперта тоже пишется в журнал.
+
+## Исходное значение и документ
+У значения: `raw_value_text` (как в документе при первой загрузке, не меняется), `raw_unit`, `source_ref` («таблица 1, строка 5»). Документ: номер, дата, ревизия, `file_sha256`, `scan_path`/`scan_sha256`. Трассировка в xlsx («Данные»): документ → образец → делянка → глубина → показатель → значение → проверка → итоговый статус.
+
+## Паспорт почвы
+`plot_soil_passport`: классификационное название и система классификации, положение в рельефе, глубины отбора, исходные характеристики, определённые в опыте; методы — у каждого измерения (`method_code`, стандарт). Незаполненное поле — «не заполнено», значения по умолчанию не подставляются; недостающее попадает в `Техдолг_<код>.xlsx` (`scripts/export_techdebt.py`).
+
+## Плоская сводка
+`features_soil_summary.csv` и лист «Сводка показателей»: `Почвенный показатель | Глубина | Метод | Даты или события отбора | Число фактических значений | Статус проверки`. Число считает только `observed` и `transcribed`; плановые, модельные, расчётные и «не измерено» не входят. Статус — худший в группе с разбивкой. CLI: `scripts/export_soil_summary.py <код>`.
 
 ## Слои НСПД (1.1.0, ADR-019)
 - Слой — единица: ключ `L<layer_id>`; одна категория НСПД бывает опубликована несколькими слоями — это разные слои.

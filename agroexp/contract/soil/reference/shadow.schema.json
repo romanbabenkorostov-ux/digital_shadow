@@ -1,0 +1,397 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://cca.ekcelo.ru/ns/shadow.schema.json",
+ "title": "Цифровая тень полевого опыта ССА",
+ "type": "object",
+ "required": [
+  "format",
+  "version",
+  "project",
+  "organizations",
+  "site",
+  "field",
+  "experiment",
+  "variants",
+  "plots",
+  "sampling_points",
+  "management_events",
+  "observations",
+  "environment",
+  "soil",
+  "economics",
+  "readiness",
+  "passport"
+ ],
+ "properties": {
+  "format": {
+   "const": "ssa-digital-shadow"
+  },
+  "version": {
+   "type": "string",
+   "pattern": "^\\d+\\.\\d+\\.\\d+$"
+  },
+  "project": {
+   "type": "object",
+   "required": [
+    "iri",
+    "code",
+    "title"
+   ],
+   "properties": {
+    "iri": {
+     "type": "string",
+     "pattern": "^https://"
+    },
+    "code": {
+     "type": "string"
+    }
+   }
+  },
+  "organizations": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "iri",
+     "role_key"
+    ],
+    "not": {
+     "anyOf": [
+      {
+       "required": [
+        "signatory_name"
+       ]
+      },
+      {
+       "required": [
+        "phone"
+       ]
+      },
+      {
+       "required": [
+        "email"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "experiment": {
+   "type": "object",
+   "required": [
+    "iri",
+    "hypotheses",
+    "endpoints",
+    "factors",
+    "matrix",
+    "analysis_plans",
+    "protocol_status"
+   ],
+   "properties": {
+    "protocol_status": {
+     "enum": [
+      "proposed",
+      "approved",
+      null
+     ]
+    },
+    "hypotheses": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "iri",
+       "code",
+       "statement",
+       "evidence_role",
+       "status"
+      ]
+     }
+    },
+    "endpoints": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "iri",
+       "code",
+       "role",
+       "variable"
+      ],
+      "properties": {
+       "role": {
+        "enum": [
+         "primary",
+         "secondary",
+         "exploratory"
+        ]
+       },
+       "mdd_pct": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "target_effect_pct": {
+        "type": [
+         "number",
+         "null"
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "variants": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "iri",
+     "variant_code",
+     "levels"
+    ]
+   }
+  },
+  "plots": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "required": [
+     "iri",
+     "code",
+     "plot_no",
+     "variant",
+     "geometry",
+     "harvest_area",
+     "levels"
+    ],
+    "properties": {
+     "iri": {
+      "type": "string",
+      "pattern": "^https://"
+     },
+     "plot_no": {
+      "type": "integer"
+     },
+     "geometry": {
+      "type": "object",
+      "required": [
+       "type",
+       "coordinates"
+      ]
+     },
+     "harvest_area": {
+      "type": "object",
+      "required": [
+       "iri",
+       "area_m2",
+       "side_buffer_m"
+      ],
+      "properties": {
+       "area_m2": {
+        "type": [
+         "number",
+         "null"
+        ]
+       },
+       "side_buffer_m": {
+        "type": [
+         "number",
+         "null"
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "sampling_points": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "iri",
+     "point_code",
+     "source"
+    ],
+    "properties": {
+     "lat": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "lon": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "in_harvest_area": {
+      "type": [
+       "boolean",
+       "null"
+      ]
+     }
+    }
+   }
+  },
+  "management_events": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "iri",
+     "kind",
+     "pass_code",
+     "pass_date",
+     "plots"
+    ]
+   }
+  },
+  "observations": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "iri",
+     "kind",
+     "date",
+     "property",
+     "value"
+    ],
+    "properties": {
+     "kind": {
+      "enum": [
+       "lab",
+       "crop",
+       "harvest",
+       "phenology"
+      ]
+     },
+     "observer": false
+    }
+   }
+  },
+  "environment": {
+   "type": "object",
+   "required": [
+    "weather_point",
+    "daily",
+    "terrain",
+    "ndvi"
+   ]
+  },
+  "soil": {
+   "type": "object",
+   "required": [
+    "pits",
+    "map_contours",
+    "survey_fields"
+   ]
+  },
+  "cadastre": {
+   "type": "object",
+   "required": [
+    "runs",
+    "objects",
+    "plot_overlaps",
+    "uncovered"
+   ],
+   "properties": {
+    "objects": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "iri",
+       "key",
+       "group",
+       "valid_from"
+      ],
+      "properties": {
+       "layer_key": {
+        "type": "string",
+        "pattern": "^[LC]\\d+$"
+       },
+       "layer_resolution": {
+        "enum": [
+         "measured",
+         "declared",
+         "single_in_category",
+         "base_of_category",
+         "ambiguous",
+         "unknown",
+         null
+        ]
+       }
+      }
+     }
+    },
+    "layers": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "iri",
+       "layer_key",
+       "title",
+       "role",
+       "coverage_status"
+      ],
+      "properties": {
+       "coverage_status": {
+        "enum": [
+         "checked_objects_found",
+         "checked_no_objects",
+         "display_only"
+        ]
+       }
+      }
+     }
+    },
+    "coverage": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "plot",
+       "layer",
+       "status",
+       "objects_found"
+      ],
+      "properties": {
+       "status": {
+        "enum": [
+         "checked_objects_found",
+         "checked_no_objects"
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "readiness": {
+   "type": "object",
+   "required": [
+    "verdict",
+    "counts",
+    "checks",
+    "hash"
+   ],
+   "properties": {
+    "verdict": {
+     "enum": [
+      "READY",
+      "READY AS EXPLORATORY",
+      "NOT READY"
+     ]
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,466 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ppeo: <http://purl.org/ppeo/PPEO.owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssa: <https://cca.ekcelo.ru/ns/ssa#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://cca.ekcelo.ru/ns/ssa> a owl:Ontology ;
+    rdfs:label "Цифровая тень полевого опыта ССА"@ru .
+
+ssa:CentnerPerHectare a qudt:Unit ;
+    rdfs:label "ц/га"@ru .
+
+ssa:Claim a owl:Class ;
+    rdfs:label "Вывод"@ru ;
+    rdfs:comment "Формулировка вывода с уровнем доказательности и границами"@ru .
+
+ssa:Correction a owl:Class ;
+    rdfs:label "Исправление"@ru ;
+    rdfs:comment "Запись журнала: прежнее и новое значение, причина, кто и когда; исходное значение не удаляется"@ru ;
+    skos:closeMatch prov:Revision .
+
+ssa:MaterialBatch a owl:Class ;
+    rdfs:label "Партия материала"@ru ;
+    rdfs:comment "Почвоулучшитель или биопрепарат, его состав"@ru .
+
+ssa:ProtocolDeviation a owl:Class ;
+    rdfs:label "Отклонение протокола"@ru ;
+    rdfs:comment "Что, где и почему отличилось"@ru .
+
+ssa:SourceDocument a owl:Class ;
+    rdfs:label "Документ-источник"@ru ;
+    rdfs:comment "Лабораторная ведомость или иной документ, из которого перенесено значение (номер, дата, ревизия, SHA-256, скан)"@ru ;
+    skos:closeMatch prov:Entity .
+
+ssa:VerificationStatus a owl:Class ;
+    rdfs:label "Статус проверки"@ru ;
+    rdfs:comment "Состояние значения (valid / suspect / not_measured / invalid) и итог проверки; присвоен алгоритмом или экспертом"@ru ;
+    skos:closeMatch prov:Activity .
+
+ssa:areaM2 a owl:DatatypeProperty ;
+    rdfs:label "площадь, м²"@ru ;
+    rdfs:domain ssa:HarvestArea ;
+    rdfs:range xsd:decimal .
+
+ssa:aroundExperiment a owl:ObjectProperty ;
+    rdfs:label "контур карты в радиусе 10 км"@ru ;
+    rdfs:domain ssa:SoilMapContour ;
+    rdfs:range ssa:Experiment .
+
+ssa:asWKT a owl:DatatypeProperty ;
+    rdfs:label "геометрия WKT"@ru ;
+    rdfs:domain ssa:Plot ;
+    rdfs:range geo:wktLiteral ;
+    skos:exactMatch geo:asWKT .
+
+ssa:assignedVariant a owl:ObjectProperty ;
+    rdfs:label "вариант делянки"@ru ;
+    rdfs:domain ssa:Plot ;
+    rdfs:range ssa:Variant .
+
+ssa:checkOf a owl:ObjectProperty ;
+    rdfs:label "проверка опыта"@ru ;
+    rdfs:domain ssa:ReadinessCheck ;
+    rdfs:range ssa:Experiment .
+
+ssa:checksLayer a owl:ObjectProperty ;
+    rdfs:label "проверен слой"@ru ;
+    rdfs:domain ssa:CoverageCheck ;
+    rdfs:range ssa:CadastralLayer .
+
+ssa:checksPlot a owl:ObjectProperty ;
+    rdfs:label "проверена делянка"@ru ;
+    rdfs:domain ssa:CoverageCheck ;
+    rdfs:range ssa:Plot .
+
+ssa:code a owl:DatatypeProperty ;
+    rdfs:label "код"@ru ;
+    rdfs:domain ssa:Plot ;
+    rdfs:range xsd:string ;
+    skos:closeMatch dcterms:identifier .
+
+ssa:coloredIn a owl:ObjectProperty ;
+    rdfs:label "раскрашен тематическим слоем"@ru ;
+    rdfs:domain ssa:CadastralObject ;
+    rdfs:range ssa:CadastralLayer .
+
+ssa:contourCount a owl:DatatypeProperty ;
+    rdfs:label "число контуров участка"@ru ;
+    rdfs:domain ssa:CadastralParcel ;
+    rdfs:range xsd:decimal .
+
+ssa:coverageStatus a owl:DatatypeProperty ;
+    rdfs:label "полнота проверки слоя"@ru ;
+    rdfs:domain ssa:CoverageCheck ;
+    rdfs:range xsd:string .
+
+ssa:dataOrigin a owl:DatatypeProperty ;
+    rdfs:label "происхождение значения"@ru ;
+    rdfs:domain ssa:Observation ;
+    rdfs:range xsd:string .
+
+ssa:drawnIn a owl:ObjectProperty ;
+    rdfs:label "отрисован в слое"@ru ;
+    rdfs:domain ssa:CadastralObject ;
+    rdfs:range ssa:CadastralLayer .
+
+ssa:economicsOf a owl:ObjectProperty ;
+    rdfs:label "экономика варианта"@ru ;
+    rdfs:domain ssa:EconomicResult ;
+    rdfs:range ssa:Variant .
+
+ssa:endpointOf a owl:ObjectProperty ;
+    rdfs:label "исход опыта"@ru ;
+    rdfs:domain ssa:Endpoint ;
+    rdfs:range ssa:Experiment .
+
+ssa:eventOn a owl:ObjectProperty ;
+    rdfs:label "событие на делянке"@ru ;
+    rdfs:domain ssa:ManagementEvent ;
+    rdfs:range ssa:Plot .
+
+ssa:evidenceRole a owl:DatatypeProperty ;
+    rdfs:label "роль в доказательстве"@ru ;
+    rdfs:domain ssa:Hypothesis ;
+    rdfs:range xsd:string .
+
+ssa:harvestAreaOf a owl:ObjectProperty ;
+    rdfs:label "учётная полоса делянки"@ru ;
+    rdfs:domain ssa:HarvestArea ;
+    rdfs:range ssa:Plot ;
+    skos:closeMatch sosa:isSampleOf .
+
+ssa:hasFactor a owl:ObjectProperty ;
+    rdfs:label "фактор опыта"@ru ;
+    rdfs:domain ssa:Experiment ;
+    rdfs:range ssa:Factor .
+
+ssa:hasFeatureOfInterest a owl:ObjectProperty ;
+    rdfs:label "объект наблюдения"@ru ;
+    rdfs:domain ssa:Observation ;
+    rdfs:range ssa:Plot ;
+    skos:exactMatch sosa:hasFeatureOfInterest .
+
+ssa:hasLevel a owl:ObjectProperty ;
+    rdfs:label "уровень в варианте"@ru ;
+    rdfs:domain ssa:Variant ;
+    rdfs:range ssa:FactorLevel .
+
+ssa:hasParty a owl:ObjectProperty ;
+    rdfs:label "сторона проекта"@ru ;
+    rdfs:domain ssa:Project ;
+    rdfs:range ssa:Organization .
+
+ssa:hasVariant a owl:ObjectProperty ;
+    rdfs:label "вариант опыта"@ru ;
+    rdfs:domain ssa:Experiment ;
+    rdfs:range ssa:Variant .
+
+ssa:horizonOf a owl:ObjectProperty ;
+    rdfs:label "горизонт разреза"@ru ;
+    rdfs:domain ssa:SoilHorizon ;
+    rdfs:range ssa:SoilPit .
+
+ssa:hypothesisOf a owl:ObjectProperty ;
+    rdfs:label "гипотеза опыта"@ru ;
+    rdfs:domain ssa:Hypothesis ;
+    rdfs:range ssa:Experiment .
+
+ssa:inExperiment a owl:ObjectProperty ;
+    rdfs:label "делянка опыта"@ru ;
+    rdfs:domain ssa:Plot ;
+    rdfs:range ssa:Experiment .
+
+ssa:label a owl:DatatypeProperty ;
+    rdfs:label "название"@ru ;
+    rdfs:domain ssa:Project ;
+    rdfs:range xsd:string ;
+    skos:exactMatch skos:prefLabel .
+
+ssa:layerId a owl:DatatypeProperty ;
+    rdfs:label "ID слоя НСПД"@ru ;
+    rdfs:domain ssa:CadastralLayer ;
+    rdfs:range xsd:decimal .
+
+ssa:layerResolution a owl:DatatypeProperty ;
+    rdfs:label "как определён слой объекта (measured / declared / single_in_category / base_of_category / ambiguous)"@ru ;
+    rdfs:domain ssa:CadastralObject ;
+    rdfs:range xsd:string .
+
+ssa:levelOf a owl:ObjectProperty ;
+    rdfs:label "уровень фактора"@ru ;
+    rdfs:domain ssa:FactorLevel ;
+    rdfs:range ssa:Factor .
+
+ssa:locatedIn a owl:ObjectProperty ;
+    rdfs:label "расположен в"@ru ;
+    rdfs:domain ssa:Field ;
+    rdfs:range ssa:Site ;
+    skos:closeMatch schema:containedInPlace .
+
+ssa:mddPct a owl:DatatypeProperty ;
+    rdfs:label "MDD, %"@ru ;
+    rdfs:domain ssa:Endpoint ;
+    rdfs:range xsd:decimal .
+
+ssa:nearExperiment a owl:ObjectProperty ;
+    rdfs:label "разрез рядом с опытом"@ru ;
+    rdfs:domain ssa:SoilPit ;
+    rdfs:range ssa:Experiment .
+
+ssa:objectsFound a owl:DatatypeProperty ;
+    rdfs:label "найдено объектов"@ru ;
+    rdfs:domain ssa:CoverageCheck ;
+    rdfs:range xsd:decimal .
+
+ssa:observedProperty a owl:ObjectProperty ;
+    rdfs:label "наблюдаемое свойство"@ru ;
+    rdfs:domain ssa:Observation ;
+    rdfs:range ssa:ObservableProperty ;
+    skos:exactMatch sosa:observedProperty .
+
+ssa:onField a owl:ObjectProperty ;
+    rdfs:label "заложен на поле"@ru ;
+    rdfs:domain ssa:Experiment ;
+    rdfs:range ssa:Field .
+
+ssa:onPlot a owl:ObjectProperty ;
+    rdfs:label "на делянке"@ru ;
+    rdfs:domain ssa:SamplingPoint ;
+    rdfs:range ssa:Plot .
+
+ssa:overlapsPlot a owl:ObjectProperty ;
+    rdfs:label "лежит под делянкой"@ru ;
+    rdfs:domain ssa:CadastralObject ;
+    rdfs:range ssa:Plot .
+
+ssa:parcelKind a owl:DatatypeProperty ;
+    rdfs:label "вид участка ЕГРН (single / multi_contour / ezp)"@ru ;
+    rdfs:domain ssa:CadastralParcel ;
+    rdfs:range xsd:string .
+
+ssa:partOfProject a owl:ObjectProperty ;
+    rdfs:label "относится к проекту"@ru ;
+    rdfs:domain ssa:Experiment ;
+    rdfs:range ssa:Project ;
+    skos:closeMatch dcterms:isPartOf .
+
+ssa:planOf a owl:ObjectProperty ;
+    rdfs:label "план анализа опыта"@ru ;
+    rdfs:domain ssa:AnalysisPlan ;
+    rdfs:range ssa:Experiment .
+
+ssa:resultTime a owl:DatatypeProperty ;
+    rdfs:label "дата наблюдения"@ru ;
+    rdfs:domain ssa:Observation ;
+    rdfs:range xsd:date ;
+    skos:exactMatch sosa:resultTime .
+
+ssa:source a owl:DatatypeProperty ;
+    rdfs:label "источник"@ru ;
+    rdfs:domain ssa:Observation ;
+    rdfs:range xsd:string ;
+    skos:closeMatch dcterms:source .
+
+ssa:status a owl:DatatypeProperty ;
+    rdfs:label "статус"@ru ;
+    rdfs:domain ssa:ReadinessCheck ;
+    rdfs:range xsd:string .
+
+ssa:surveyOf a owl:ObjectProperty ;
+    rdfs:label "поле обследования опыта"@ru ;
+    rdfs:domain ssa:SurveyField ;
+    rdfs:range ssa:Experiment .
+
+ssa:targetEffectPct a owl:DatatypeProperty ;
+    rdfs:label "целевой эффект, %"@ru ;
+    rdfs:domain ssa:Endpoint ;
+    rdfs:range xsd:decimal .
+
+ssa:tests a owl:ObjectProperty ;
+    rdfs:label "проверяет гипотезу"@ru ;
+    rdfs:domain ssa:Endpoint ;
+    rdfs:range ssa:Hypothesis .
+
+ssa:underExperiment a owl:ObjectProperty ;
+    rdfs:label "контур под опытом"@ru ;
+    rdfs:domain ssa:SoilMapContour ;
+    rdfs:range ssa:Experiment .
+
+ssa:unit a owl:DatatypeProperty ;
+    rdfs:label "единица"@ru ;
+    rdfs:domain ssa:ObservableProperty ;
+    rdfs:range xsd:string ;
+    skos:closeMatch qudt:unit .
+
+ssa:value a owl:DatatypeProperty ;
+    rdfs:label "значение"@ru ;
+    rdfs:domain ssa:Observation ;
+    rdfs:range xsd:decimal ;
+    skos:exactMatch sosa:hasSimpleResult .
+
+ssa:wasDerivedFrom a owl:ObjectProperty ;
+    rdfs:label "получено из"@ru ;
+    rdfs:domain ssa:Observation ;
+    rdfs:range ssa:Sample ;
+    skos:exactMatch prov:wasDerivedFrom .
+
+ssa:weatherOf a owl:ObjectProperty ;
+    rdfs:label "метеоточка поля"@ru ;
+    rdfs:domain ssa:WeatherPoint ;
+    rdfs:range ssa:Field .
+
+ssa:AnalysisPlan a owl:Class ;
+    rdfs:label "План анализа"@ru ;
+    rdfs:comment "Модель, единица, ковариаты, множественность"@ru ;
+    skos:closeMatch prov:Plan .
+
+ssa:EconomicResult a owl:Class ;
+    rdfs:label "Экономический результат"@ru ;
+    rdfs:comment "Δмаржа и порог осуществимости"@ru .
+
+ssa:ManagementEvent a owl:Class ;
+    rdfs:label "Агротехническое событие"@ru ;
+    rdfs:comment "Внесение, сев, проход техники"@ru ;
+    skos:closeMatch ppeo:event,
+        prov:Activity .
+
+ssa:Organization a owl:Class ;
+    rdfs:label "Организация"@ru ;
+    rdfs:comment "Сторона кейса (людей нет — только роль и организация)"@ru ;
+    skos:closeMatch prov:Organization ;
+    skos:exactMatch schema:Organization .
+
+ssa:Sample a owl:Class ;
+    rdfs:label "Проба"@ru ;
+    rdfs:comment "Лабораторная проба (почва, растение, зерно)"@ru ;
+    skos:exactMatch sosa:Sample .
+
+ssa:SamplingPoint a owl:Class ;
+    rdfs:label "Точка отбора"@ru ;
+    rdfs:comment "Центр делянки, точка плотности, скважина 0–100 см"@ru ;
+    skos:closeMatch sosa:Platform .
+
+ssa:SoilHorizon a owl:Class ;
+    rdfs:label "Горизонт"@ru ;
+    rdfs:comment "Горизонт разреза"@ru .
+
+ssa:WeatherPoint a owl:Class ;
+    rdfs:label "Метеоточка"@ru ;
+    rdfs:comment "Точка суточной погоды (ERA5 / Open-Meteo)"@ru ;
+    skos:closeMatch sosa:Platform .
+
+ssa:Factor a owl:Class ;
+    rdfs:label "Фактор"@ru ;
+    rdfs:comment "Изучаемый фактор (БЧБГ, БП, БТ)"@ru ;
+    skos:closeMatch ppeo:experimental_factor_type .
+
+ssa:FactorLevel a owl:Class ;
+    rdfs:label "Уровень фактора"@ru ;
+    rdfs:comment "Уровень фактора и доза"@ru ;
+    skos:closeMatch ppeo:experimental_factor_value .
+
+ssa:HarvestArea a owl:Class ;
+    rdfs:label "Учётная полоса"@ru ;
+    rdfs:comment "Часть делянки, с которой убирают и отбирают пробы"@ru ;
+    skos:closeMatch sosa:Sample .
+
+ssa:ObservableProperty a owl:Class ;
+    rdfs:label "Наблюдаемое свойство"@ru ;
+    rdfs:comment "Переменная: характеристика + метод + единица (MIAPPE)"@ru ;
+    skos:closeMatch ppeo:observed_variable ;
+    skos:exactMatch sosa:ObservableProperty .
+
+ssa:ReadinessCheck a owl:Class ;
+    rdfs:label "Проверка готовности"@ru ;
+    rdfs:comment "PASS / WARN / BLOCK по аудиту"@ru .
+
+ssa:Site a owl:Class ;
+    rdfs:label "Площадка"@ru ;
+    rdfs:comment "Место опыта: субъект, поселение, центр делянок"@ru ;
+    skos:closeMatch ppeo:geographic_location,
+        sosa:FeatureOfInterest .
+
+ssa:SoilMapContour a owl:Class ;
+    rdfs:label "Контур почвенной карты"@ru ;
+    rdfs:comment "Контур карты ЮФУ"@ru .
+
+ssa:SoilPit a owl:Class ;
+    rdfs:label "Почвенный разрез"@ru ;
+    rdfs:comment "Разрез из библиотеки разрезов"@ru .
+
+ssa:Field a owl:Class ;
+    rdfs:label "Поле опыта"@ru ;
+    rdfs:comment "Агрополе хозяйства, на котором заложен опыт. Не участок ЕГРН и не поле агрохимслужбы: границы у трёх понятий разные"@ru ;
+    rdfs:subClassOf ssa:Site ;
+    owl:disjointWith ssa:CadastralParcel,
+        ssa:SurveyField .
+
+ssa:Hypothesis a owl:Class ;
+    rdfs:label "Гипотеза"@ru ;
+    rdfs:comment "Проверяемая гипотеза опыта"@ru ;
+    skos:closeMatch prov:Plan .
+
+ssa:Project a owl:Class ;
+    rdfs:label "Проект"@ru ;
+    rdfs:comment "Кейс ССА: опыт и стороны"@ru ;
+    skos:closeMatch prov:Activity .
+
+ssa:SurveyField a owl:Class ;
+    rdfs:label "Поле агрохимслужбы"@ru ;
+    rdfs:comment "Рабочий участок агрохимобследования (тур «Дон-Плодородие»): единица обследования, а не кадастровый участок"@ru ;
+    owl:disjointWith ssa:CadastralParcel .
+
+ssa:CadastralLayer a owl:Class ;
+    rdfs:label "Слой кадастровой карты"@ru ;
+    rdfs:comment "Слой НСПД со своим layer_id (ключ L<id>): одна категория НСПД публикуется несколькими слоями — это разные слои. C<категория> — объекты, слой которых не определён (кандидаты названы). Тематический слой — раскраска, не дом объекта"@ru .
+
+ssa:CoverageCheck a owl:Class ;
+    rdfs:label "Проверка слоя под делянкой"@ru ;
+    rdfs:comment "Делянка × слой: найдено или проверено и не найдено. «Не найдено» — только для слоя, который запрашивал прогон (cad_run_layer)"@ru .
+
+ssa:Endpoint a owl:Class ;
+    rdfs:label "Исход"@ru ;
+    rdfs:comment "Главный / вторичный / поисковый исход с MDD"@ru .
+
+ssa:Variant a owl:Class ;
+    rdfs:label "Вариант"@ru ;
+    rdfs:comment "Вариант опыта (сочетание уровней факторов)"@ru ;
+    skos:closeMatch ppeo:experimental_factor .
+
+ssa:CadastralObject a owl:Class ;
+    rdfs:label "Объект кадастра"@ru ;
+    rdfs:comment "Участок ЕГРН, ОКС, ЗОУИТ, лесничество, охотугодья с карты НСПД (версия на дату)"@ru ;
+    skos:closeMatch geo:Feature .
+
+ssa:CadastralParcel a owl:Class ;
+    rdfs:label "Земельный участок ЕГРН"@ru ;
+    rdfs:comment "Объект кадастрового учёта с одним кадастровым номером. Бывает обособленным, многоконтурным или единым землепользованием (ЕЗП) из нескольких контуров (parcelKind, contourCount). Делянка может лежать в нескольких участках"@ru ;
+    rdfs:subClassOf ssa:CadastralObject .
+
+ssa:Observation a owl:Class ;
+    rdfs:label "Наблюдение"@ru ;
+    rdfs:comment "Значение свойства объекта на дату"@ru ;
+    skos:exactMatch sosa:Observation .
+
+ssa:Plot a owl:Class ;
+    rdfs:label "Делянка"@ru ;
+    rdfs:comment "Экспериментальная единица"@ru ;
+    owl:disjointWith ssa:CadastralParcel,
+        ssa:SurveyField ;
+    skos:closeMatch sosa:FeatureOfInterest ;
+    skos:exactMatch ppeo:observation_unit .
+
+ssa:Experiment a owl:Class ;
+    rdfs:label "Полевой опыт"@ru ;
+    rdfs:comment "Опыт: вопрос, дизайн, повторности, статус доказательности"@ru ;
+    skos:closeMatch ppeo:study,
+        prov:Plan .
+
