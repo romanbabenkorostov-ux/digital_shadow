@@ -178,6 +178,11 @@ ssa:inExperiment a owl:ObjectProperty ;
     rdfs:domain ssa:Plot ;
     rdfs:range ssa:Experiment .
 
+ssa:issueOf a owl:ObjectProperty ;
+    rdfs:label "проблема постановки опыта"@ru ;
+    rdfs:domain ssa:DesignIssue ;
+    rdfs:range ssa:Experiment .
+
 ssa:label a owl:DatatypeProperty ;
     rdfs:label "название"@ru ;
     rdfs:domain ssa:Project ;
@@ -199,6 +204,11 @@ ssa:levelOf a owl:ObjectProperty ;
     rdfs:domain ssa:FactorLevel ;
     rdfs:range ssa:Factor .
 
+ssa:limits a owl:ObjectProperty ;
+    rdfs:label "ограничивает проверку гипотезы"@ru ;
+    rdfs:domain ssa:DesignIssue ;
+    rdfs:range ssa:Hypothesis .
+
 ssa:locatedIn a owl:ObjectProperty ;
     rdfs:label "расположен в"@ru ;
     rdfs:domain ssa:Field ;
@@ -214,6 +224,11 @@ ssa:nearExperiment a owl:ObjectProperty ;
     rdfs:label "разрез рядом с опытом"@ru ;
     rdfs:domain ssa:SoilPit ;
     rdfs:range ssa:Experiment .
+
+ssa:nextExperiment a owl:DatatypeProperty ;
+    rdfs:label "требование к следующему опыту"@ru ;
+    rdfs:domain ssa:DesignIssue ;
+    rdfs:range xsd:string .
 
 ssa:objectsFound a owl:DatatypeProperty ;
     rdfs:label "найдено объектов"@ru ;
@@ -262,6 +277,11 @@ ssa:resultTime a owl:DatatypeProperty ;
     rdfs:domain ssa:Observation ;
     rdfs:range xsd:date ;
     skos:exactMatch sosa:resultTime .
+
+ssa:severity a owl:DatatypeProperty ;
+    rdfs:label "серьёзность проблемы (block / warn / info)"@ru ;
+    rdfs:domain ssa:DesignIssue ;
+    rdfs:range xsd:string .
 
 ssa:source a owl:DatatypeProperty ;
     rdfs:label "источник"@ru ;
@@ -403,11 +423,6 @@ ssa:Field a owl:Class ;
     owl:disjointWith ssa:CadastralParcel,
         ssa:SurveyField .
 
-ssa:Hypothesis a owl:Class ;
-    rdfs:label "Гипотеза"@ru ;
-    rdfs:comment "Проверяемая гипотеза опыта"@ru ;
-    skos:closeMatch prov:Plan .
-
 ssa:Project a owl:Class ;
     rdfs:label "Проект"@ru ;
     rdfs:comment "Кейс ССА: опыт и стороны"@ru ;
@@ -426,9 +441,19 @@ ssa:CoverageCheck a owl:Class ;
     rdfs:label "Проверка слоя под делянкой"@ru ;
     rdfs:comment "Делянка × слой: найдено или проверено и не найдено. «Не найдено» — только для слоя, который запрашивал прогон (cad_run_layer)"@ru .
 
+ssa:DesignIssue a owl:Class ;
+    rdfs:label "Проблема постановки опыта"@ru ;
+    rdfs:comment "Ограничение вывода, выявленное по данным (покрытие контрастов измерениями, уровень объединения проб, структура повторностей, мощность) вместе с требованием к следующему опыту"@ru ;
+    skos:closeMatch prov:Entity .
+
 ssa:Endpoint a owl:Class ;
     rdfs:label "Исход"@ru ;
     rdfs:comment "Главный / вторичный / поисковый исход с MDD"@ru .
+
+ssa:Hypothesis a owl:Class ;
+    rdfs:label "Гипотеза"@ru ;
+    rdfs:comment "Проверяемая гипотеза опыта"@ru ;
+    skos:closeMatch prov:Plan .
 
 ssa:Variant a owl:Class ;
     rdfs:label "Вариант"@ru ;

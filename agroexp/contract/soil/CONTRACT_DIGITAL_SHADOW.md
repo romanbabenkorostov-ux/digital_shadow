@@ -1,6 +1,6 @@
 # CONTRACT_DIGITAL_SHADOW — машиночитаемая цифровая тень опыта
 
-**Версия:** 1.2.0 · **Код:** `core/twin/` · **Решение:** `obsidian/Decisions/ADR-017-digital-shadow.md`, ADR-019 (слои НСПД)
+**Версия:** 1.4.0 · **Код:** `core/twin/` · **Решение:** `obsidian/Decisions/ADR-017-digital-shadow.md`, ADR-019 (слои НСПД)
 
 ## Как получить
 - `py .\scripts\export_twin.py <код>` → `html\twin\<код>_twin\` + `<код>_twin.zip`;
@@ -72,3 +72,13 @@
 - Тематический слой — раскраска (`thematic_coloring`, `display_only`): объектов в нём нет, объект — в базовом слое.
 - «Не найдено» — только для слоя, который запрашивал прогон; иначе слой в тень не попадает как проверенный.
 - Привязка к тени кадастровой карты abn: её словарь `nspd:` ссылается на `ssa:CadastralLayer`, `ssa:CadastralObject`, `ssa:CadastralParcel`, `ssa:drawnIn` через `skos:exactMatch`.
+
+## Привязка к Crop Ontology (1.3.0, additive, ADR-020)
+Если исход протокола привязан к переменной Crop Ontology, в комплект добавляются: `co_variable` и `co_match` у колонки-цели в `feature_contract.json`; поля `co_variable_id`, `co_match`, `co_snapshot_sha256`, `co_confirmed` у исхода в `shadow.json`; `skos:exactMatch` / `skos:closeMatch` на `https://cropontology.org/rdf/<ID>` в `shadow.ttl`; `sources.ontology[]` в `manifest.json`; файл `ONTOLOGY_ATTRIBUTION.md`. Определения, формулы и русские подписи словаря в комплект не входят. Без привязок комплект отличается от версии 1.2.0 номером версии и разделом `design_issues` (1.4.0, ниже; `CONTRACT_ONTOLOGY.md`).
+
+## Реестр проблем постановки опыта (1.4.0, additive)
+`shadow.json` → `design_issues[]`: `{iri, code, title, category, severity (block|warn|info), hypothesis_codes, evidence, consequence, next_experiment, source_rule, rule_version, status (open|mitigated|accepted|closed), status_note, status_by}`. Класс `ssa:DesignIssue`, связи `ssa:issueOf` (опыт) и `ssa:limits` (гипотеза).
+- Проблема выводится по данным (`core/experiment/design_audit.py`, правила версионируются): покрытие контрастов гипотез измерениями в скважинах, уровень объединения проб (вариант вместо делянки), ранговая связь номера повторности и варианта с положением, геометрия делянок и учётных полос, MDD и число повторностей по формуле `protocol.mdd_pct`, составной фактор, а также уроки проверок готовности (рандомизация, доза, паспорта партий, NPK-эквивалент, история поля).
+- `evidence` - вывод из данных; `consequence` - что нельзя утверждать; `next_experiment` - требование к закладке следующего опыта (`scripts/design_audit.py plan`).
+- Проблема не равна ошибке исполнителя. Статус ставит человек (`scripts/design_audit.py status`, роль без ФИО), хранится в таблице `design_issue`, пересчёт его не перезаписывает.
+- Схему размещения нового опыта проверяют до закладки: `scripts/design_audit.py layout plots.json --scheme plots_scheme.json` (полнота повторностей, связь номера повторности и варианта с положением).
