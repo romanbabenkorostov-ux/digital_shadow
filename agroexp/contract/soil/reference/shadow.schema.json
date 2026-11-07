@@ -392,6 +392,42 @@
      ]
     }
    }
+  },
+  "design_issues": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "iri",
+     "code",
+     "title",
+     "severity",
+     "evidence",
+     "next_experiment",
+     "status"
+    ],
+    "properties": {
+     "iri": {
+      "type": "string",
+      "pattern": "^https://"
+     },
+     "severity": {
+      "enum": [
+       "block",
+       "warn",
+       "info"
+      ]
+     },
+     "status": {
+      "enum": [
+       "open",
+       "mitigated",
+       "accepted",
+       "closed"
+      ]
+     }
+    }
+   }
   }
  }
 }
