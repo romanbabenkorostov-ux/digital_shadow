@@ -6,3 +6,5 @@
 - `agroexp/contract/soil/reference/` — эталоны `shadow.schema.json` и `ontology.ttl`.
 
 Эталон и код — в репозитории cca (`contracts/`, `core/twin/`, `core/soil_lab/`); при расхождении верен cca, этот репозиторий обновляется копированием в том же изменении.
+
+https:\\ekcelo.ru - формирование цифровых теней бизнес-активов
